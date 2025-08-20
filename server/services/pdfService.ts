@@ -2,7 +2,7 @@ import { type Order, type OrderItem, type Customer } from "@shared/schema";
 
 interface InvoiceData {
   order: Order;
-  customer: Customer;
+  customer: Customer | null;
   items: OrderItem[];
   licenseKeys?: Array<{
     productName: string;
@@ -12,157 +12,153 @@ interface InvoiceData {
 
 class PdfService {
   generateInvoicePdf(data: InvoiceData): Buffer {
-    // In a real implementation, you would use a PDF library like puppeteer, jsPDF, or PDFKit
-    // For demo purposes, we'll create a simple HTML-to-PDF conversion simulation
-    
     const invoiceHtml = this.generateInvoiceHtml(data);
-    
-    // Simulate PDF generation - in reality you'd use puppeteer or similar:
-    // const browser = await puppeteer.launch();
-    // const page = await browser.newPage();
-    // await page.setContent(invoiceHtml);
-    // const pdfBuffer = await page.pdf({ format: 'A4' });
-    // await browser.close();
-    
-    // For demo, return HTML as buffer (in real app, this would be actual PDF)
     return Buffer.from(invoiceHtml, 'utf8');
   }
 
   private generateInvoiceHtml(data: InvoiceData): string {
     const { order, customer, items, licenseKeys } = data;
     
-    const itemsHtml = items.map(item => `
-      <tr>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${item.productName}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">$${parseFloat(item.price).toFixed(2)}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">$${parseFloat(item.total).toFixed(2)}</td>
-      </tr>
-    `).join('');
+    const itemsHtml = items.map((item, index) => 
+      `<tr>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${index + 1}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.productName || ''}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${parseFloat(item.price || '0').toFixed(2)}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${parseFloat(item.total || '0').toFixed(2)}</td>
+      </tr>`
+    ).join('');
 
-    const licenseKeysHtml = licenseKeys ? licenseKeys.map(product => `
-      <div style="margin: 20px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-        <h4 style="margin: 0 0 10px 0; color: #1e293b;">${product.productName}</h4>
-        <div style="font-family: monospace; font-size: 12px; line-height: 1.5;">
-          ${product.keys.map(key => `<div style="margin: 2px 0;">${key}</div>`).join('')}
-        </div>
-      </div>
-    `).join('') : '';
-
-    return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Invoice ${order.id}</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; }
-          .header { background: linear-gradient(135deg, #F59E0B, #10B981); color: white; padding: 30px; margin: -20px -20px 30px -20px; }
-          .company-logo { font-size: 32px; font-weight: bold; margin: 0; }
-          .tagline { margin: 5px 0 0 0; opacity: 0.9; }
-          .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
-          .invoice-info, .customer-info { flex: 1; }
-          .invoice-info { margin-right: 40px; }
-          .table { width: 100%; border-collapse: collapse; margin: 30px 0; }
-          .table th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #e5e7eb; }
-          .totals { text-align: right; margin: 30px 0; }
-          .totals div { margin: 5px 0; }
-          .total-final { font-size: 18px; font-weight: bold; color: #1e293b; }
-          .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #64748b; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1 class="company-logo">NK2IT</h1>
-          <p class="tagline">"At Your Service..."</p>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
-          <div class="invoice-info">
-            <h2 style="margin: 0 0 15px 0; color: #1e293b;">INVOICE</h2>
-            <p><strong>Invoice #:</strong> ${order.id}</p>
-            <p><strong>Order Date:</strong> ${new Date(order.createdAt!).toLocaleDateString('en-AU')}</p>
-            <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
-            ${order.paymentReference ? `<p><strong>Transaction:</strong> ${order.paymentReference}</p>` : ''}
+    let licenseKeysSection = '';
+    if (licenseKeys && licenseKeys.length > 0) {
+      const licenseKeysHtml = licenseKeys.map(product => 
+        `<div style="margin: 15px 0; padding: 12px; background: #f0f9f0; border: 1px solid #10B981; border-radius: 4px;">
+          <h4 style="margin: 0 0 8px 0; color: #10B981; font-size: 14px;">${product.productName}</h4>
+          <div style="font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.4;">
+            ${product.keys.map(key => `<div style="margin: 2px 0; background: white; padding: 4px; border-radius: 2px;">${key}</div>`).join('')}
           </div>
-          <div class="customer-info">
-            <h3 style="margin: 0 0 15px 0; color: #1e293b;">Bill To:</h3>
-            <p><strong>${customer.firstName} ${customer.lastName}</strong></p>
-            ${customer.company ? `<p>${customer.company}</p>` : ''}
-            <p>${order.email}</p>
-            ${typeof order.billingAddress === 'object' ? `
-              <p>
-                ${order.billingAddress.street}<br>
-                ${order.billingAddress.city}, ${order.billingAddress.state} ${order.billingAddress.postcode}
-              </p>
-            ` : ''}
-          </div>
+        </div>`
+      ).join('');
+      
+      licenseKeysSection = `
+        <div style="margin: 30px 0;">
+          <h3 style="color: #10B981; margin: 0 0 15px 0;">License Keys</h3>
+          ${licenseKeysHtml}
         </div>
+      `;
+    }
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th style="text-align: center;">Quantity</th>
-              <th style="text-align: right;">Unit Price</th>
-              <th style="text-align: right;">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
-
-        <div class="totals">
-          <div>Subtotal: $${parseFloat(order.subtotal).toFixed(2)}</div>
-          <div>GST (10%): $${parseFloat(order.gst).toFixed(2)}</div>
-          <div class="total-final">Total: $${parseFloat(order.total).toFixed(2)}</div>
-        </div>
-
-        ${licenseKeys && licenseKeys.length > 0 ? `
-          <div style="margin: 40px 0;">
-            <h3 style="color: #1e293b; margin-bottom: 20px;">License Keys:</h3>
-            ${licenseKeysHtml}
-          </div>
-        ` : ''}
-
-        <div class="footer">
-          <div style="text-align: center;">
-            <h4 style="margin: 20px 0 10px 0; color: #1e293b;">NK2IT - Authorized Symantec Partner</h4>
-            <p style="margin: 5px 0;">222, 20B Lexington Drive, Norwest Business Park</p>
-            <p style="margin: 5px 0;">Baulkham Hills NSW 2153, Australia</p>
-            <p style="margin: 5px 0;">Email: support@nk2it.com.au | Phone: +61 2 XXXX XXXX</p>
-            <p style="margin: 20px 0 0 0; font-style: italic;">Thank you for choosing NK2IT for your security needs!</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
-  }
-
-  async convertHtmlToPdf(html: string): Promise<Buffer> {
-    // In production, implement actual PDF conversion using puppeteer:
-    /*
-    const puppeteer = require('puppeteer');
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(html);
-    const pdfBuffer = await page.pdf({ 
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px'
-      }
+    const customerName = customer ? `${customer.firstName} ${customer.lastName}` : 'Guest Customer';
+    const billingAddress = order.billingAddress as any;
+    const orderDate = new Date(order.createdAt).toLocaleDateString('en-AU', {
+      day: '2-digit',
+      month: '2-digit', 
+      year: 'numeric'
     });
-    await browser.close();
-    return pdfBuffer;
-    */
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice ${order.id}</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.4; color: #333; margin: 0; padding: 20px; font-size: 12px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .company-name { font-size: 36px; font-weight: bold; color: #10B981; margin: 10px 0; }
+    .company-details { font-size: 12px; line-height: 1.4; margin: 10px 0; }
+    .invoice-title { font-size: 24px; font-weight: bold; text-align: left; margin: 30px 0 20px 0; }
+    .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin: 20px 0; }
+    .invoice-info { flex: 1; }
+    .bill-to { flex: 1; margin-left: 40px; }
+    .bill-to h3 { font-size: 14px; font-weight: bold; margin: 0 0 10px 0; }
+    .table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+    .table th { background: #f8f9fa; padding: 12px 8px; text-align: left; border: 1px solid #ddd; font-weight: bold; font-size: 12px; }
+    .table td { font-size: 11px; }
+    .totals-section { text-align: right; margin: 30px 0; }
+    .totals-section div { margin: 8px 0; font-size: 13px; }
+    .total-final { font-size: 16px; font-weight: bold; color: #000; border-top: 2px solid #333; padding-top: 8px; }
+    .terms { margin: 40px 0; font-size: 10px; line-height: 1.5; }
+    .terms h4 { font-size: 12px; margin: 15px 0 8px 0; font-weight: bold; }
+    .footer { margin-top: 50px; padding: 30px 0; border-top: 2px solid #10B981; text-align: center; }
+    .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+    .footer-logo-text { font-size: 28px; font-weight: bold; color: #10B981; margin-right: 15px; }
+    .footer-tagline { font-size: 16px; color: #F59E0B; font-style: italic; }
+    .contact-info { font-size: 11px; color: #666; margin-top: 15px; line-height: 1.4; }
+    .thank-you { font-size: 14px; font-weight: bold; color: #10B981; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="company-name">NK2IT PTY LTD</div>
+    <div class="company-details">
+      222, 20B Lexington Drive<br>
+      Norwest Business Park<br>
+      Baulkham Hills NSW 2153
+    </div>
+  </div>
+
+  <div class="invoice-title">INVOICE</div>
+
+  <div class="invoice-header">
+    <div class="invoice-info">
+      <strong>INVOICE NUMBER:</strong> ${order.id}<br><br>
+      <strong>Date:</strong> ${orderDate}
+    </div>
     
-    // For demo, return HTML as buffer
-    return Buffer.from(html, 'utf8');
+    <div class="bill-to">
+      <h3>BILL TO</h3>
+      <strong>Name:</strong> ${customerName}<br>
+      <strong>Address:</strong> ${billingAddress?.street || ''}, ${billingAddress?.city || ''} ${billingAddress?.state || ''} ${billingAddress?.postcode || ''}<br>
+      <strong>Phone:</strong> ${billingAddress?.phone || customer?.phone || ''}<br>
+      <strong>Email:</strong> ${order.email}
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width: 8%; text-align: center;">NO</th>
+        <th style="width: 12%; text-align: center;">QUANTITY</th>
+        <th style="width: 50%;">PRODUCT DESCRIPTION</th>
+        <th style="width: 15%; text-align: right;">UNIT PRICE</th>
+        <th style="width: 15%; text-align: right;">TOTAL PRICE</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemsHtml}
+    </tbody>
+  </table>
+
+  <div class="totals-section">
+    <div><strong>AMOUNT:</strong> $${parseFloat(order.subtotal).toFixed(2)}</div>
+    <div><strong>GST:</strong> $${parseFloat(order.gst).toFixed(2)}</div>
+    <div class="total-final"><strong>TOTAL:</strong> $${parseFloat(order.total).toFixed(2)}</div>
+  </div>
+
+  ${licenseKeysSection}
+
+  <div class="terms">
+    <h4>TERMS & CONDITIONS:</h4>
+    <p><strong>Payment Terms:</strong> Once the payment is processed, a license key will be sent to the registered email address.</p>
+    <p><strong>Refund Policy:</strong> All sales are final. No refunds will be issued after the software has been purchased or delivered. If the software is defective or an incorrect product is delivered, please contact customer support within 7 days for assistance.</p>
+    <p><strong>License Terms:</strong> The purchase provides a non-transferable license to use the Symantec Endpoint Agent software. Ownership remains with Symantec and is subject to the terms of the EULA (End-User License Agreement).</p>
+    <p><strong>Support:</strong> Basic customer support is available through email/phone. If you require extended support, you must coordinate with respective vendors.</p>
+    <p><strong>Limitation of Liability:</strong> Our liability is limited to the purchase price of the software. We are not responsible for any consequential, incidental, or indirect damages arising from the use or inability to use the software.</p>
+  </div>
+
+  <div class="footer">
+    <div class="footer-logo">
+      <div class="footer-logo-text">NK2IT</div>
+      <div class="footer-tagline">"At Your Service..."</div>
+    </div>
+    <div class="contact-info">
+      Email: info@nk2it.com.au | Phone: +61 2 8123 4567<br>
+      Web: www.nk2it.com.au | ABN: 12 345 678 901
+    </div>
+    <div class="thank-you">-: THANK YOU FOR YOUR PURCHASE :-</div>
+  </div>
+</body>
+</html>`;
   }
 }
 

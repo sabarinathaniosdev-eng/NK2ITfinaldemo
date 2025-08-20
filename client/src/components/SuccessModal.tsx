@@ -1,13 +1,10 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Download, Mail, Copy, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Download, Mail } from "lucide-react";
 
 interface SuccessModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   orderResult: {
     orderId: string;
     transactionId: string;
@@ -15,222 +12,103 @@ interface SuccessModalProps {
       productName: string;
       keys: string[];
     }>;
-    total: number;
-  };
-  onClose: () => void;
+    total: string;
+  } | null;
 }
 
-export default function SuccessModal({ orderResult, onClose }: SuccessModalProps) {
-  const [isDownloading, setIsDownloading] = useState(false);
-  const { toast } = useToast();
-
-  const emailInvoiceMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest('POST', `/api/orders/${orderResult.orderId}/email-invoice`);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Invoice Sent",
-        description: "Invoice has been sent to your email address.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to send invoice. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleDownloadInvoice = async () => {
-    try {
-      setIsDownloading(true);
-      const response = await fetch(`/api/orders/${orderResult.orderId}/invoice`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to download invoice');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `NK2IT-Invoice-${orderResult.orderId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast({
-        title: "Download Started",
-        description: "Invoice download has started.",
-      });
-    } catch (error) {
-      toast({
-        title: "Download Failed",
-        description: "Failed to download invoice. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({
-        title: "Copied",
-        description: "License key copied to clipboard.",
-      });
-    } catch (error) {
-      toast({
-        title: "Copy Failed",
-        description: "Failed to copy to clipboard.",
-        variant: "destructive",
-      });
+export default function SuccessModal({ isOpen, onClose, orderResult }: SuccessModalProps) {
+  const handleDownloadInvoice = () => {
+    if (orderResult?.orderId) {
+      window.open(`/api/orders/${orderResult.orderId}/invoice`, '_blank');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50" data-testid="success-modal">
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <CardContent className="p-8 text-center">
-            <div className="text-6xl text-green-500 mb-4">
-              <CheckCircle className="w-16 h-16 mx-auto" />
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" data-testid="success-modal">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-3 text-2xl text-green-600">
+            <CheckCircle className="h-8 w-8" />
+            Payment Successful!
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* Order Details */}
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="font-semibold text-lg mb-4">Order Details</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-600">Order ID:</p>
+                <p className="font-mono" data-testid="order-id">{orderResult?.orderId}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Transaction ID:</p>
+                <p className="font-mono" data-testid="transaction-id">{orderResult?.transactionId}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Total Amount:</p>
+                <p className="font-semibold text-lg" data-testid="total-amount">${orderResult?.total} AUD</p>
+              </div>
             </div>
-            
-            <h2 className="text-3xl font-bold text-green-700 mb-2">Payment Successful!</h2>
-            <p className="text-gray-600 mb-8">
-              Your license keys have been generated and sent to your email.
-            </p>
+          </div>
 
-            {/* Order Details */}
-            <Card className="mb-6 text-left">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4">Order Details</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Order ID:</span>
-                    <span className="font-mono" data-testid="text-order-id">
-                      {orderResult.orderId}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Transaction ID:</span>
-                    <span className="font-mono" data-testid="text-transaction-id">
-                      {orderResult.transactionId}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Payment Method:</span>
-                    <span>Credit Card</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Total Amount:</span>
-                    <span className="font-semibold" data-testid="text-order-total">
-                      ${orderResult.total.toFixed(2)} AUD
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* License Keys */}
-            <Card className="mb-6 text-left">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-4 text-blue-800">Your License Keys</h3>
-                <div className="space-y-4">
-                  {orderResult.licenseKeys.map((product, index) => (
-                    <div key={index} className="border border-blue-300 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-800 mb-3" data-testid={`text-product-${index}`}>
-                        {product.productName}
-                      </h4>
-                      <div className="space-y-2">
-                        {product.keys.map((key, keyIndex) => (
-                          <div
-                            key={keyIndex}
-                            className="flex justify-between items-center bg-gray-50 p-2 rounded border"
-                            data-testid={`license-key-${index}-${keyIndex}`}
-                          >
-                            <span className="font-mono text-sm text-blue-700 flex-1 mr-2">
-                              {key}
-                            </span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copyToClipboard(key)}
-                              data-testid={`button-copy-key-${index}-${keyIndex}`}
-                            >
-                              <Copy className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
+          {/* License Keys */}
+          {orderResult?.licenseKeys && orderResult.licenseKeys.length > 0 && (
+            <div className="bg-green-50 p-6 rounded-lg border border-green-200">
+              <h3 className="font-semibold text-lg mb-4 text-green-800">Your License Keys</h3>
+              <div className="space-y-4">
+                {orderResult.licenseKeys.map((product, index) => (
+                  <div key={index} className="bg-white p-4 rounded border">
+                    <h4 className="font-medium mb-2" data-testid={`product-${index}`}>{product.productName}</h4>
+                    <div className="space-y-1">
+                      {product.keys.map((key, keyIndex) => (
+                        <div key={keyIndex} className="font-mono text-sm bg-gray-100 p-2 rounded" 
+                             data-testid={`license-key-${index}-${keyIndex}`}>
+                          {key}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-100 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    <CheckCircle className="w-4 h-4 inline mr-1" />
-                    These license keys have also been sent to your email address.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Next Steps */}
-            <Card className="mb-6 text-left">
-              <CardContent className="p-6">
-                <h4 className="font-medium text-blue-800 mb-3">📋 Next Steps:</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Save these license keys in a secure location</li>
-                  <li>• Download the Symantec software from the official portal</li>
-                  <li>• Use these keys during installation and activation</li>
-                  <li>• Contact our support team if you need installation assistance</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mb-4">
-              <Button
-                onClick={handleDownloadInvoice}
-                disabled={isDownloading}
-                className="flex-1 bg-nk-orange hover:bg-orange-600 text-white"
-                data-testid="button-download-invoice"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                {isDownloading ? 'Downloading...' : 'Download Invoice'}
-              </Button>
-              
-              <Button
-                onClick={() => emailInvoiceMutation.mutate()}
-                disabled={emailInvoiceMutation.isPending}
-                variant="outline"
-                className="flex-1"
-                data-testid="button-email-invoice"
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                {emailInvoiceMutation.isPending ? 'Sending...' : 'Email Invoice'}
-              </Button>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-            <Button
-              onClick={onClose}
-              variant="link"
-              className="w-full text-nk-orange hover:text-orange-600 font-medium"
-              data-testid="button-continue-shopping"
+          {/* Important Notice */}
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <div className="flex items-start gap-3">
+              <Mail className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-blue-900 mb-1">Email Confirmation</h4>
+                <p className="text-blue-800 text-sm">
+                  A confirmation email with your license keys has been sent to your email address. 
+                  Please check your inbox and save the keys securely.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-4">
+            <Button 
+              onClick={handleDownloadInvoice}
+              className="flex items-center gap-2"
+              data-testid="download-invoice-btn"
             >
-              Continue Shopping
+              <Download className="h-4 w-4" />
+              Download Invoice
             </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+            <Button 
+              variant="outline" 
+              onClick={onClose}
+              data-testid="close-modal-btn"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

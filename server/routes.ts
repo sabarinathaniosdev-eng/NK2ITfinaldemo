@@ -205,7 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               orderId: order.id,
               orderItemId: item.id || null,
               productId: item.productId,
-              licenseKey: key,
+              licenseKey: key || '',
             });
           }
           

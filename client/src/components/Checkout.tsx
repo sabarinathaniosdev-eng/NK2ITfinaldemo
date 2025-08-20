@@ -97,7 +97,7 @@ export default function Checkout({ onClose, onSuccess }: CheckoutProps) {
       return response.json();
     },
     onSuccess: (data) => {
-      setCheckoutData(prev => ({ ...prev, email: emailForm.getValues().email }));
+      setCheckoutData((prev: any) => ({ ...prev, email: emailForm.getValues().email }));
       setStep(1.5); // Show OTP step
       toast({
         title: "Verification Code Sent",
@@ -169,7 +169,7 @@ export default function Checkout({ onClose, onSuccess }: CheckoutProps) {
   };
 
   const handleAddressSubmit = (data: any) => {
-    setCheckoutData(prev => ({ ...prev, billing: data }));
+    setCheckoutData((prev: any) => ({ ...prev, billing: data }));
     setStep(3);
   };
 
