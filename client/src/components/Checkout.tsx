@@ -13,7 +13,7 @@ import { X, Check, CreditCard, Lock, AlertTriangle } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import SuccessModal from '../components/SuccessModal';
+import SuccessModal from './SuccessModal';
 
 interface CheckoutProps {
   onClose: () => void;
