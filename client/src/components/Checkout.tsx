@@ -210,6 +210,7 @@ export default function Checkout({ onClose, onSuccess }: CheckoutProps) {
   if (showSuccess) {
     return (
       <SuccessModal
+        isOpen={showSuccess}
         orderResult={orderResult}
         onClose={() => {
           setShowSuccess(false);

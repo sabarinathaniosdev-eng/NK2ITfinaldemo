@@ -6,6 +6,35 @@ This is a React-based e-commerce application for selling Symantec endpoint secur
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Changes (August 2025)
+
+## NK2IT Branding Implementation
+- **Logo Integration**: Added NK2IT logo to header navigation using attached logo file
+- **Color Scheme**: Implemented orange (#F59E0B) and green (#10B981) branding throughout platform
+- **Navigation**: Centered navigation menu with Home, Products, Support, and Cart sections
+- **Footer Enhancement**: Added bigger NK2IT logo and comprehensive contact details
+
+## PDF Invoice System
+- **Professional Template**: Created NK2IT-branded PDF invoices matching provided template format
+- **Company Branding**: NK2IT PTY LTD header with full business address (Norwest Business Park, Baulkham Hills NSW 2153)
+- **License Key Integration**: Automatic inclusion of generated license keys in PDF invoices
+- **Terms & Conditions**: Complete T&C section with payment terms, refund policy, and liability limitations
+- **Contact Information**: Professional footer with email, phone, website, and ABN details
+- **Thank You Message**: NK2IT branded closing message
+
+## Checkout Flow Enhancements
+- **Success Modal**: Professional order completion modal displaying license keys and download options
+- **Email Verification**: Robust OTP-based email verification system with demo mode
+- **Payment Processing**: BPOINT integration with comprehensive error handling
+- **License Delivery**: Automatic license key generation and email delivery system
+- **Invoice Download**: Instant PDF invoice download capability post-purchase
+
+## Technical Improvements
+- **Error Resolution**: Fixed all TypeScript compilation errors and LSP diagnostics
+- **Performance**: Optimized checkout flow with proper loading states and user feedback
+- **Demo Mode**: Comprehensive demo mode for testing without real payment processing
+- **Data Validation**: Enhanced form validation with Zod schemas for all user inputs
+
 # System Architecture
 
 ## Frontend Architecture
