@@ -1,166 +1,174 @@
-import { type Order, type OrderItem, type Customer } from "@shared/schema";
+import PDFDocument from 'pdfkit';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 interface InvoiceData {
-  order: Order;
-  customer: Customer | null;
-  items: OrderItem[];
-  licenseKeys?: Array<{
-    productName: string;
-    keys: string[];
-  }>;
+  id: string;
+  email: string;
+  licenseKey: string;
+  amountCents: number;
 }
 
-class PdfService {
-  generateInvoicePdf(data: InvoiceData): Buffer {
-    const invoiceHtml = this.generateInvoiceHtml(data);
-    return Buffer.from(invoiceHtml, 'utf8');
-  }
+export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
+  const doc = new PDFDocument({ margin: 50 });
+  const chunks: Buffer[] = [];
 
-  private generateInvoiceHtml(data: InvoiceData): string {
-    const { order, customer, items, licenseKeys } = data;
-    
-    const itemsHtml = items.map((item, index) => 
-      `<tr>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${index + 1}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.productName || ''}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${parseFloat(item.price || '0').toFixed(2)}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">$${parseFloat(item.total || '0').toFixed(2)}</td>
-      </tr>`
-    ).join('');
-
-    let licenseKeysSection = '';
-    if (licenseKeys && licenseKeys.length > 0) {
-      const licenseKeysHtml = licenseKeys.map(product => 
-        `<div style="margin: 15px 0; padding: 12px; background: #f0f9f0; border: 1px solid #10B981; border-radius: 4px;">
-          <h4 style="margin: 0 0 8px 0; color: #10B981; font-size: 14px;">${product.productName}</h4>
-          <div style="font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.4;">
-            ${product.keys.map(key => `<div style="margin: 2px 0; background: white; padding: 4px; border-radius: 2px;">${key}</div>`).join('')}
-          </div>
-        </div>`
-      ).join('');
-      
-      licenseKeysSection = `
-        <div style="margin: 30px 0;">
-          <h3 style="color: #10B981; margin: 0 0 15px 0;">License Keys</h3>
-          ${licenseKeysHtml}
-        </div>
-      `;
-    }
-
-    const customerName = customer ? `${customer.firstName} ${customer.lastName}` : 'Guest Customer';
-    const billingAddress = order.billingAddress as any;
-    const orderDate = new Date(order.createdAt).toLocaleDateString('en-AU', {
-      day: '2-digit',
-      month: '2-digit', 
-      year: 'numeric'
+  // Collect PDF stream into buffer
+  doc.on('data', (chunk: Buffer) => chunks.push(chunk));
+  
+  return new Promise((resolve, reject) => {
+    doc.on('end', () => {
+      const pdfBuffer = Buffer.concat(chunks);
+      resolve(pdfBuffer);
     });
 
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Invoice ${order.id}</title>
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.4; color: #333; margin: 0; padding: 20px; font-size: 12px; }
-    .header { text-align: center; margin-bottom: 30px; }
-    .company-name { font-size: 36px; font-weight: bold; color: #10B981; margin: 10px 0; }
-    .company-details { font-size: 12px; line-height: 1.4; margin: 10px 0; }
-    .invoice-title { font-size: 24px; font-weight: bold; text-align: left; margin: 30px 0 20px 0; }
-    .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin: 20px 0; }
-    .invoice-info { flex: 1; }
-    .bill-to { flex: 1; margin-left: 40px; }
-    .bill-to h3 { font-size: 14px; font-weight: bold; margin: 0 0 10px 0; }
-    .table { width: 100%; border-collapse: collapse; margin: 30px 0; }
-    .table th { background: #f8f9fa; padding: 12px 8px; text-align: left; border: 1px solid #ddd; font-weight: bold; font-size: 12px; }
-    .table td { font-size: 11px; }
-    .totals-section { text-align: right; margin: 30px 0; }
-    .totals-section div { margin: 8px 0; font-size: 13px; }
-    .total-final { font-size: 16px; font-weight: bold; color: #000; border-top: 2px solid #333; padding-top: 8px; }
-    .terms { margin: 40px 0; font-size: 10px; line-height: 1.5; }
-    .terms h4 { font-size: 12px; margin: 15px 0 8px 0; font-weight: bold; }
-    .footer { margin-top: 50px; padding: 30px 0; border-top: 2px solid #10B981; text-align: center; }
-    .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
-    .footer-logo-text { font-size: 28px; font-weight: bold; color: #10B981; margin-right: 15px; }
-    .footer-tagline { font-size: 16px; color: #F59E0B; font-style: italic; }
-    .contact-info { font-size: 11px; color: #666; margin-top: 15px; line-height: 1.4; }
-    .thank-you { font-size: 14px; font-weight: bold; color: #10B981; margin: 20px 0; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="company-name">NK2IT PTY LTD</div>
-    <div class="company-details">
-      222, 20B Lexington Drive<br>
-      Norwest Business Park<br>
-      Baulkham Hills NSW 2153
-    </div>
-  </div>
+    doc.on('error', reject);
 
-  <div class="invoice-title">INVOICE</div>
+    // Calculate GST (10%)
+    const gstCents = Math.round(data.amountCents * 0.1);
+    const totalCents = data.amountCents + gstCents;
 
-  <div class="invoice-header">
-    <div class="invoice-info">
-      <strong>INVOICE NUMBER:</strong> ${order.id}<br><br>
-      <strong>Date:</strong> ${orderDate}
-    </div>
+    // Header with orange color
+    doc.fillColor('#FF7A00')
+       .fontSize(28)
+       .font('Helvetica-Bold')
+       .text('INVOICE', 50, 50);
+
+    // Company details
+    doc.fillColor('#000000')
+       .fontSize(16)
+       .font('Helvetica-Bold')
+       .text('NK2IT PTY LTD', 50, 100)
+       .fontSize(12)
+       .font('Helvetica')
+       .text('222, 20B Lexington Drive', 50, 125)
+       .text('Norwest Business Park', 50, 140)
+       .text('Baulkham Hills NSW 2153', 50, 155);
+
+    // Invoice details (right side)
+    const currentDate = new Date().toLocaleDateString('en-AU');
+    doc.text(`INVOICE NUMBER: ${data.id}`, 350, 100)
+       .text(`Date: ${currentDate}`, 350, 120);
+
+    // Bill To section
+    doc.fontSize(14)
+       .font('Helvetica-Bold')
+       .text('BILL TO', 50, 200);
+
+    doc.fontSize(12)
+       .font('Helvetica')
+       .text(`Email: ${data.email}`, 50, 225);
+
+    // Product table header
+    const tableTop = 280;
+    doc.fontSize(12)
+       .font('Helvetica-Bold')
+       .text('NO', 50, tableTop)
+       .text('QUANTITY', 90, tableTop)
+       .text('PRODUCT DESCRIPTION', 160, tableTop)
+       .text('UNIT PRICE', 380, tableTop)
+       .text('TOTAL PRICE', 470, tableTop);
+
+    // Table line
+    doc.moveTo(50, tableTop + 20)
+       .lineTo(550, tableTop + 20)
+       .stroke();
+
+    // Product row
+    const productRow = tableTop + 30;
+    doc.fontSize(12)
+       .font('Helvetica')
+       .text('1', 50, productRow)
+       .text('1', 90, productRow)
+       .text('Symantec Endpoint Protection License', 160, productRow)
+       .text(`$${(data.amountCents / 100).toFixed(2)}`, 380, productRow)
+       .text(`$${(data.amountCents / 100).toFixed(2)}`, 470, productRow);
+
+    // License key section
+    doc.fontSize(12)
+       .font('Helvetica-Bold')
+       .text('License Key:', 50, productRow + 40)
+       .font('Helvetica')
+       .text(data.licenseKey, 140, productRow + 40);
+
+    // Totals section
+    const totalsY = productRow + 80;
+    doc.text('AMOUNT:', 400, totalsY)
+       .text(`$${(data.amountCents / 100).toFixed(2)}`, 470, totalsY)
+       .text('GST (10%):', 400, totalsY + 20)
+       .text(`$${(gstCents / 100).toFixed(2)}`, 470, totalsY + 20)
+       .font('Helvetica-Bold')
+       .text('TOTAL:', 400, totalsY + 40)
+       .text(`$${(totalCents / 100).toFixed(2)}`, 470, totalsY + 40);
+
+    // Terms & Conditions
+    const termsY = totalsY + 100;
+    doc.fontSize(14)
+       .font('Helvetica-Bold')
+       .text('TERMS & CONDITIONS:', 50, termsY);
+
+    const termsText = [
+      'Payment Terms: Once the payment is processed, a license key will be sent to the registered email address.',
+      '',
+      'Refund Policy: All sales are final. No refunds will be issued after the software has been purchased or delivered.',
+      'If the software is defective or an incorrect product is delivered, please contact customer support within 7 days.',
+      '',
+      'License Terms: The purchase provides a non-transferable license to use the Symantec Endpoint Agent software.',
+      'Ownership remains with Symantec and is subject to the terms of the EULA (End-User License Agreement).',
+      '',
+      'Support: Basic customer support is available through support@nk2it.com.au. If you require extended support,',
+      'you must coordinate with respective vendors.',
+      '',
+      'Limitation of Liability: Our liability is limited to the purchase price of the software. We are not responsible',
+      'for any consequential, incidental, or indirect damages arising from the use or inability to use the software.'
+    ];
+
+    let currentY = termsY + 30;
+    doc.fontSize(10).font('Helvetica');
     
-    <div class="bill-to">
-      <h3>BILL TO</h3>
-      <strong>Name:</strong> ${customerName}<br>
-      <strong>Address:</strong> ${billingAddress?.street || ''}, ${billingAddress?.city || ''} ${billingAddress?.state || ''} ${billingAddress?.postcode || ''}<br>
-      <strong>Phone:</strong> ${billingAddress?.phone || customer?.phone || ''}<br>
-      <strong>Email:</strong> ${order.email}
-    </div>
-  </div>
+    termsText.forEach(line => {
+      if (line === '') {
+        currentY += 10;
+      } else {
+        doc.text(line, 50, currentY, { width: 500 });
+        currentY += 15;
+      }
+    });
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th style="width: 8%; text-align: center;">NO</th>
-        <th style="width: 12%; text-align: center;">QUANTITY</th>
-        <th style="width: 50%;">PRODUCT DESCRIPTION</th>
-        <th style="width: 15%; text-align: right;">UNIT PRICE</th>
-        <th style="width: 15%; text-align: right;">TOTAL PRICE</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${itemsHtml}
-    </tbody>
-  </table>
+    // Footer with green color
+    const footerY = doc.page.height - 80;
+    doc.fillColor('#00A65A')
+       .fontSize(14)
+       .font('Helvetica-Bold')
+       .text('Thank you for your purchase! Powered by NK2IT', 50, footerY, {
+         width: 500,
+         align: 'center'
+       });
 
-  <div class="totals-section">
-    <div><strong>AMOUNT:</strong> $${parseFloat(order.subtotal).toFixed(2)}</div>
-    <div><strong>GST:</strong> $${parseFloat(order.gst).toFixed(2)}</div>
-    <div class="total-final"><strong>TOTAL:</strong> $${parseFloat(order.total).toFixed(2)}</div>
-  </div>
+    // Contact info
+    doc.fillColor('#000000')
+       .fontSize(10)
+       .font('Helvetica')
+       .text('Email: support@nk2it.com.au | Phone: 1300 NK2 IT | Website: nk2it.com.au', 50, footerY + 30, {
+         width: 500,
+         align: 'center'
+       });
 
-  ${licenseKeysSection}
-
-  <div class="terms">
-    <h4>TERMS & CONDITIONS:</h4>
-    <p><strong>Payment Terms:</strong> Once the payment is processed, a license key will be sent to the registered email address.</p>
-    <p><strong>Refund Policy:</strong> All sales are final. No refunds will be issued after the software has been purchased or delivered. If the software is defective or an incorrect product is delivered, please contact customer support within 7 days for assistance.</p>
-    <p><strong>License Terms:</strong> The purchase provides a non-transferable license to use the Symantec Endpoint Agent software. Ownership remains with Symantec and is subject to the terms of the EULA (End-User License Agreement).</p>
-    <p><strong>Support:</strong> Basic customer support is available through email/phone. If you require extended support, you must coordinate with respective vendors.</p>
-    <p><strong>Limitation of Liability:</strong> Our liability is limited to the purchase price of the software. We are not responsible for any consequential, incidental, or indirect damages arising from the use or inability to use the software.</p>
-  </div>
-
-  <div class="footer">
-    <div class="footer-logo">
-      <div class="footer-logo-text">NK2IT</div>
-      <div class="footer-tagline">"At Your Service..."</div>
-    </div>
-    <div class="contact-info">
-      Email: info@nk2it.com.au | Phone: +61 2 8123 4567<br>
-      Web: www.nk2it.com.au | ABN: 12 345 678 901
-    </div>
-    <div class="thank-you">-: THANK YOU FOR YOUR PURCHASE :-</div>
-  </div>
-</body>
-</html>`;
-  }
+    doc.end();
+  });
 }
 
-export const pdfService = new PdfService();
-export type { InvoiceData };
+export async function saveInvoiceRecord(data: InvoiceData, gstCents: number, pdfFileName: string) {
+  return await prisma.invoice.create({
+    data: {
+      id: data.id,
+      userEmail: data.email,
+      amountCents: data.amountCents,
+      gstCents,
+      licenseKey: data.licenseKey,
+      pdfFileName,
+      createdAt: new Date()
+    }
+  });
+}

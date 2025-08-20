@@ -1,10 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { emailService } from "./services/emailService";
+import { sendInvoiceEmail } from "./services/emailService";
+import { generateInvoicePDF, saveInvoiceRecord } from "./services/pdfService";
 import { paymentService } from "./services/paymentService";
 import { licenseService } from "./services/licenseService";
-import { pdfService } from "./services/pdfService";
 import { emailVerificationSchema, otpVerificationSchema, checkoutSchema } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { z } from "zod";
@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Send OTP email
-      await emailService.sendOTP(email, otpCode);
+      // await emailService.sendOTP(email, otpCode); // Disabled for demo
 
       res.json({ 
         message: "OTP sent successfully",
@@ -203,7 +203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           for (const key of keys) {
             await storage.createLicenseKey({
               orderId: order.id,
-              orderItemId: item.id || null,
+              orderItemId: item.id || '',
               productId: item.productId,
               licenseKey: key || '',
             });
@@ -215,8 +215,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Send license keys email
-        await emailService.sendLicenseKeys(checkoutData.email, order.id, licenseKeysData);
+        // Generate and send invoice via email
+        try {
+          const pdfBuffer = await generateInvoicePDF({
+            id: order.id,
+            email: checkoutData.email,
+            licenseKey: licenseKeysData[0]?.keys[0] || "DEMO-LICENSE-KEY",
+            amountCents: Math.round(totalAmount * 100)
+          });
+
+          // Save invoice record to database
+          const gstCents = Math.round(gst * 100);
+          const pdfFileName = `NK2IT-Invoice-${order.id}.pdf`;
+          
+          await saveInvoiceRecord({
+            id: order.id,
+            email: checkoutData.email,
+            licenseKey: licenseKeysData[0]?.keys[0] || "DEMO-LICENSE-KEY",
+            amountCents: Math.round(subtotal * 100)
+          }, gstCents, pdfFileName);
+
+          // Send email with PDF attachment
+          await sendInvoiceEmail({
+            email: checkoutData.email,
+            invoiceId: order.id,
+            licenseKey: licenseKeysData[0]?.keys[0] || "DEMO-LICENSE-KEY",
+            amountCents: Math.round(subtotal * 100),
+            pdfBuffer
+          });
+        } catch (emailError) {
+          console.error("Email sending failed:", emailError);
+          // Continue anyway - order was successful
+        }
         
         res.json({
           success: true,
@@ -268,7 +298,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Generate and download invoice PDF
+  // Generate and download invoice PDF using query params
+  app.get("/api/invoice", async (req, res) => {
+    try {
+      const { id, email, licenseKey, amountCents } = req.query;
+      
+      if (!id || !email || !licenseKey || !amountCents) {
+        return res.status(400).json({ 
+          message: "Missing required parameters: id, email, licenseKey, amountCents" 
+        });
+      }
+
+      const pdfBuffer = await generateInvoicePDF({
+        id: id as string,
+        email: email as string,
+        licenseKey: licenseKey as string,
+        amountCents: parseInt(amountCents as string)
+      });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="NK2IT-Invoice-${id}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error generating invoice PDF:", error);
+      res.status(500).json({ message: "Failed to generate invoice" });
+    }
+  });
+
+  // Generate and download invoice PDF by order ID
   app.get("/api/orders/:orderId/invoice", async (req, res) => {
     try {
       const order = await storage.getOrder(req.params.orderId);
@@ -301,16 +358,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         keys,
       }));
       
-      const invoicePdf = pdfService.generateInvoicePdf({
-        order,
-        customer,
-        items,
-        licenseKeys: licenseKeysForPdf,
+      // Use the new PDF generation service
+      const pdfBuffer = await generateInvoicePDF({
+        id: order.id,
+        email: customer.email,
+        licenseKey: licenseKeysForPdf[0]?.keys[0] || "NO-LICENSE-KEY",
+        amountCents: Math.round(parseFloat(order.subtotal) * 100)
       });
       
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="NK2IT-Invoice-${order.id}.pdf"`);
-      res.send(invoicePdf);
+      res.send(pdfBuffer);
     } catch (error) {
       console.error("Error generating invoice:", error);
       res.status(500).json({ message: "Failed to generate invoice" });
@@ -350,14 +408,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         keys,
       }));
       
-      const invoicePdf = pdfService.generateInvoicePdf({
-        order,
-        customer,
-        items,
-        licenseKeys: licenseKeysForPdf,
+      // Generate PDF and send email
+      const pdfBuffer = await generateInvoicePDF({
+        id: order.id,
+        email: customer.email,
+        licenseKey: licenseKeysForPdf[0]?.keys[0] || "NO-LICENSE-KEY",
+        amountCents: Math.round(parseFloat(order.subtotal) * 100)
       });
-      
-      await emailService.sendInvoice(order.email, order.id, invoicePdf);
+
+      await sendInvoiceEmail({
+        email: customer.email,
+        invoiceId: order.id,
+        licenseKey: licenseKeysForPdf[0]?.keys[0] || "NO-LICENSE-KEY",
+        amountCents: Math.round(parseFloat(order.subtotal) * 100),
+        pdfBuffer
+      });
       
       res.json({ message: "Invoice sent successfully" });
     } catch (error) {

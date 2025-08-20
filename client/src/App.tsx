@@ -7,6 +7,7 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
 import Support from "@/pages/Support";
+import InvoiceDownload from "@/pages/InvoiceDownload";
 import Cart from "@/components/Cart";
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
         return <Products />;
       case 'support':
         return <Support />;
+      case 'invoice':
+        return <InvoiceDownload />;
       case 'cart':
         return <Cart onTabChange={setCurrentTab} />;
       default:

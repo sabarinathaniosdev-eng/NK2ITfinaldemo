@@ -64,6 +64,7 @@ export default function Layout({ children, currentTab = 'home', onTabChange }: L
     { id: 'home', label: 'Home' },
     { id: 'products', label: 'Products' },
     { id: 'support', label: 'Support' },
+    { id: 'invoice', label: 'Invoice' },
     { id: 'cart', label: 'Cart', showCart: true },
   ];
 
