@@ -136,7 +136,7 @@ export default function Checkout({ onClose, onSuccess }: CheckoutProps) {
 
   const checkoutMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest('POST', '/api/orders/checkout', data);
+      const response = await apiRequest('POST', '/api/checkout', data);
       return response.json();
     },
     onSuccess: (data) => {

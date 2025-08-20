@@ -96,7 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Process checkout and payment
-  app.post("/api/orders/checkout", async (req, res) => {
+  app.post("/api/checkout", async (req, res) => {
     try {
       const checkoutData = checkoutSchema.parse(req.body);
       

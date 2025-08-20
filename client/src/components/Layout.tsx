@@ -4,6 +4,7 @@ import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import logoPath from "@assets/Nk2IT tag Logo_bg remove (1)_1755672419460.png";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,22 +14,12 @@ interface LayoutProps {
 
 const NK2ITLogo = () => (
   <div className="flex items-center space-x-3">
-    <div className="flex items-center space-x-1">
-      <div className="flex flex-col space-y-1">
-        <div className="flex space-x-1">
-          <div className="w-2 h-2 bg-nk-orange rounded-full"></div>
-          <div className="w-3 h-3 bg-nk-orange rounded-full"></div>
-        </div>
-        <div className="flex space-x-1">
-          <div className="w-3 h-3 bg-nk-orange rounded-full"></div>
-          <div className="w-2 h-2 bg-nk-orange rounded-full"></div>
-        </div>
-      </div>
-      <div className="ml-2">
-        <div className="text-2xl font-bold text-nk-green">NK2IT</div>
-        <div className="text-xs text-gray-500 -mt-1">"At Your Service..."</div>
-      </div>
-    </div>
+    <img 
+      src={logoPath} 
+      alt="NK2IT - At Your Service" 
+      className="h-10 w-auto"
+      data-testid="nk2it-logo"
+    />
   </div>
 );
 
@@ -88,14 +79,14 @@ export default function Layout({ children, currentTab = 'home', onTabChange }: L
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex items-center justify-between h-20">
             {/* Company Logo */}
             <Link href="/" data-testid="logo-link">
               <NK2ITLogo />
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            {/* Desktop Navigation - Centered */}
+            <nav className="hidden md:flex space-x-12 flex-1 justify-center">
               {tabs.map(tab => (
                 <TabButton
                   key={tab.id}
@@ -108,6 +99,9 @@ export default function Layout({ children, currentTab = 'home', onTabChange }: L
                 />
               ))}
             </nav>
+
+            {/* Spacer for balance */}
+            <div className="hidden md:block w-32"></div>
 
             {/* Mobile Menu */}
             <div className="md:hidden">
