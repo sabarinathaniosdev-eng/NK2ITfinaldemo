@@ -42,7 +42,7 @@ export const addresses = pgTable("addresses", {
 
 export const orders = pgTable("orders", {
   id: varchar("id").primaryKey(),
-  customerId: varchar("customer_id").references(() => customers.id),
+  customerId: varchar("customer_id").references(() => customers.id).notNull(),
   email: text("email").notNull(),
   status: text("status").notNull(), // 'pending' | 'processing' | 'completed' | 'failed'
   subtotal: decimal("subtotal", { precision: 10, scale: 2 }).notNull(),

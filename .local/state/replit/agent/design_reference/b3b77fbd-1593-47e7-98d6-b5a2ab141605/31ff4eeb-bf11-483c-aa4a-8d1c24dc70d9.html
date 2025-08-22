@@ -1,0 +1,1146 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NK2IT - Symantec Security Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'nk-orange': '#F59E0B',
+                        'nk-green': '#10B981',
+                        'nk-navy': '#1E293B',
+                        'nk-light': '#F8FAFC'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- @COMPONENT: Header [navigation, logo, cart indicator] -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Company Logo -->
+                <div class="flex items-center space-x-3">
+                    <!-- NK2IT Logo representation -->
+                    <div class="flex items-center space-x-1">
+                        <div class="flex flex-col space-y-1">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-nk-orange rounded-full"></div>
+                                <div class="w-3 h-3 bg-nk-orange rounded-full"></div>
+                            </div>
+                            <div class="flex space-x-1">
+                                <div class="w-3 h-3 bg-nk-orange rounded-full"></div>
+                                <div class="w-2 h-2 bg-nk-orange rounded-full"></div>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <div class="text-2xl font-bold text-nk-green">NK2IT</div>
+                            <div class="text-xs text-gray-500 -mt-1">"At Your Service..."</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-8">
+                    <button data-tab="home" class="tab-btn active text-nk-orange border-b-2 border-nk-orange font-medium py-4 px-1">Home</button>
+                    <button data-tab="products" class="tab-btn text-gray-500 hover:text-nk-orange hover:border-b-2 hover:border-nk-orange py-4 px-1">Products</button>
+                    <button data-tab="support" class="tab-btn text-gray-500 hover:text-nk-orange hover:border-b-2 hover:border-nk-orange py-4 px-1">Support</button>
+                    <button data-tab="cart" class="tab-btn text-gray-500 hover:text-nk-orange hover:border-b-2 hover:border-nk-orange py-4 px-1 relative">
+                        Cart
+                        <span class="cart-count absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-500 hover:text-nk-orange">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- @COMPONENT: MainContent [tab-based content switching] -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- @COMPONENT: HomeTab [hero section, company info, featured products] -->
+        <div id="home-tab" class="tab-content">
+            <!-- Hero Section -->
+            <section class="bg-gradient-to-r from-nk-navy to-blue-800 rounded-2xl text-white p-8 md:p-12 mb-8">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h1 class="text-3xl md:text-5xl font-bold mb-4">Enterprise Security Solutions</h1>
+                        <p class="text-xl mb-6 text-blue-100">Protect your business with industry-leading Symantec endpoint security licenses. Professional support and instant delivery guaranteed.</p>
+                        <button onclick="switchTab('products')" class="bg-nk-orange hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                            View Products
+                        </button>
+                    </div>
+                    <div class="hidden md:block">
+                        <!-- Cybersecurity themed illustration -->
+                        <div class="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
+                            <div class="text-6xl text-center mb-4">🛡️</div>
+                            <div class="text-center">
+                                <div class="text-sm text-blue-200">Trusted by 1000+ businesses</div>
+                                <div class="text-2xl font-bold">99.9% Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Company Info -->
+            <section class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="text-nk-orange text-3xl mb-4"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Authorized Reseller</h3>
+                    <p class="text-gray-600">Official Symantec partner providing genuine licenses with full vendor support.</p>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="text-nk-green text-3xl mb-4"><i class="fas fa-clock"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Instant Delivery</h3>
+                    <p class="text-gray-600">License keys delivered immediately upon payment confirmation via email.</p>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="text-blue-600 text-3xl mb-4"><i class="fas fa-headset"></i></div>
+                    <h3 class="text-xl font-semibold mb-2">Expert Support</h3>
+                    <p class="text-gray-600">Australian-based technical support for deployment and configuration assistance.</p>
+                </div>
+            </section>
+
+            <!-- Featured Products Preview -->
+            <section class="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                <h2 class="text-2xl font-bold mb-6">Featured Security Solutions</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-2">Symantec Endpoint Protection Enterprise</h3>
+                        <p class="text-gray-600 mb-4">Comprehensive endpoint security with advanced threat protection for enterprise environments.</p>
+                        <div class="text-2xl font-bold text-nk-orange mb-4">$89.99 <span class="text-sm text-gray-500">per seat/year</span></div>
+                        <button onclick="switchTab('products')" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-2 rounded-lg font-medium transition-colors">View Details</button>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-2">Symantec Endpoint Security Complete</h3>
+                        <p class="text-gray-600 mb-4">Complete security suite with EDR, threat hunting, and advanced analytics capabilities.</p>
+                        <div class="text-2xl font-bold text-nk-orange mb-4">$149.99 <span class="text-sm text-gray-500">per seat/year</span></div>
+                        <button onclick="switchTab('products')" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-2 rounded-lg font-medium transition-colors">View Details</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- @COMPONENT: ProductsTab [product catalog, filtering, detailed specs] -->
+        <div id="products-tab" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold">Symantec Security Products</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-500">Showing 2 products</div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- @COMPONENT: ProductCard [Endpoint Protection Enterprise] -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden product-card" data-product="endpoint-protection">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="text-3xl">🛡️</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Symantec Endpoint Protection</h3>
+                                <div class="text-blue-200">Enterprise Edition</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold">$89.99</div>
+                        <div class="text-blue-200">per seat/year</div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-3">Key Features:</h4>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Advanced malware protection</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Real-time threat detection</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Centralized management console</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Network and email protection</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Device and application control</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Quantity (Seats)</label>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="updateQuantity('endpoint-protection', -1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">-</button>
+                                <input type="number" id="qty-endpoint-protection" value="1" min="1" max="999" class="w-20 text-center border border-gray-300 rounded-lg py-1">
+                                <button onclick="updateQuantity('endpoint-protection', 1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">+</button>
+                            </div>
+                        </div>
+
+                        <button onclick="addToCart('endpoint-protection')" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: ProductCard [Endpoint Security Complete] -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden product-card" data-product="endpoint-complete">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-700 p-6 text-white relative">
+                        <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">POPULAR</div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="text-3xl">🔒</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Symantec Endpoint Security</h3>
+                                <div class="text-green-200">Complete Edition</div>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold">$149.99</div>
+                        <div class="text-green-200">per seat/year</div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-3">Key Features:</h4>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Everything in Enterprise +</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Endpoint Detection & Response (EDR)</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Advanced threat hunting</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Behavioral forensics</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> AI-driven adaptive protection</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Global Intelligence Network</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-2">Quantity (Seats)</label>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="updateQuantity('endpoint-complete', -1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">-</button>
+                                <input type="number" id="qty-endpoint-complete" value="1" min="1" max="999" class="w-20 text-center border border-gray-300 rounded-lg py-1">
+                                <button onclick="updateQuantity('endpoint-complete', 1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">+</button>
+                            </div>
+                        </div>
+
+                        <button onclick="addToCart('endpoint-complete')" class="w-full bg-nk-green hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Comparison -->
+            <div class="mt-12 bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                <h3 class="text-2xl font-bold mb-6">Product Comparison</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 px-4">Feature</th>
+                                <th class="text-center py-3 px-4">Endpoint Protection</th>
+                                <th class="text-center py-3 px-4">Endpoint Security Complete</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600">
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4 font-medium">Malware Protection</td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4 font-medium">Firewall & Network Protection</td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4 font-medium">Endpoint Detection & Response</td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4 font-medium">Advanced Threat Hunting</td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-times text-red-500"></i></td>
+                                <td class="text-center py-3 px-4"><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4 font-medium">AI-Driven Analytics</td>
+                                <td class="text-center py-3 px-4">Basic</td>
+                                <td class="text-center py-3 px-4">Advanced</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- @COMPONENT: SupportTab [contact info, documentation, FAQ] -->
+        <div id="support-tab" class="tab-content hidden">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-4">Support & Resources</h1>
+                <p class="text-gray-600">Get help with your Symantec security solutions. Our Australian-based team is here to assist you.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Contact Information -->
+                <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-6">Contact Information</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="text-nk-orange text-xl"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <div class="font-medium">Address</div>
+                                <div class="text-gray-600 text-sm">
+                                    222, 20B Lexington Drive<br>
+                                    Norwest Business Park<br>
+                                    Baulkham Hills NSW 2153
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="text-nk-orange text-xl"><i class="fas fa-phone"></i></div>
+                            <div>
+                                <div class="font-medium">Phone</div>
+                                <div class="text-gray-600 text-sm">+61 2 XXXX XXXX</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="text-nk-orange text-xl"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <div class="font-medium">Email</div>
+                                <div class="text-gray-600 text-sm">support@nk2it.com.au</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="text-nk-orange text-xl"><i class="fas fa-clock"></i></div>
+                            <div>
+                                <div class="font-medium">Business Hours</div>
+                                <div class="text-gray-600 text-sm">Mon-Fri: 9:00 AM - 5:00 PM AEST</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Resources -->
+                <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                    <h3 class="text-xl font-bold mb-6">Support Resources</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium mb-2">📖 Documentation</h4>
+                            <p class="text-gray-600 text-sm mb-3">Installation guides, user manuals, and best practices.</p>
+                            <a href="#" class="text-nk-orange hover:text-orange-600 text-sm font-medium">View Docs →</a>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium mb-2">💬 Live Chat</h4>
+                            <p class="text-gray-600 text-sm mb-3">Chat with our technical support team in real-time.</p>
+                            <button class="text-nk-orange hover:text-orange-600 text-sm font-medium">Start Chat →</button>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium mb-2">🎫 Support Ticket</h4>
+                            <p class="text-gray-600 text-sm mb-3">Submit a detailed support request for complex issues.</p>
+                            <a href="#" class="text-nk-orange hover:text-orange-600 text-sm font-medium">Create Ticket →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-8 bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                <h3 class="text-xl font-bold mb-6">Frequently Asked Questions</h3>
+                
+                <div class="space-y-4">
+                    <div class="faq-item border-b border-gray-200 pb-4">
+                        <button class="faq-question w-full text-left font-medium py-2 flex justify-between items-center">
+                            How long does license delivery take?
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="faq-answer hidden pt-2 text-gray-600 text-sm">
+                            License keys are delivered instantly upon successful payment confirmation. You'll receive them via email within 5 minutes of purchase completion.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item border-b border-gray-200 pb-4">
+                        <button class="faq-question w-full text-left font-medium py-2 flex justify-between items-center">
+                            What payment methods do you accept?
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="faq-answer hidden pt-2 text-gray-600 text-sm">
+                            We accept all major credit cards, PayPal, and bank transfers through our secure BPOINT payment gateway.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item border-b border-gray-200 pb-4">
+                        <button class="faq-question w-full text-left font-medium py-2 flex justify-between items-center">
+                            Can I upgrade from Enterprise to Complete edition?
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="faq-answer hidden pt-2 text-gray-600 text-sm">
+                            Yes, you can upgrade at any time. Contact our support team to arrange the upgrade and we'll handle the license transfer process.
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item border-b border-gray-200 pb-4">
+                        <button class="faq-question w-full text-left font-medium py-2 flex justify-between items-center">
+                            Do you provide installation support?
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+                        <div class="faq-answer hidden pt-2 text-gray-600 text-sm">
+                            Yes, we offer installation and configuration support as part of our service. Our technicians can assist remotely or provide detailed documentation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- @COMPONENT: CartTab [shopping cart, checkout process] -->
+        <div id="cart-tab" class="tab-content hidden">
+            <!-- Empty Cart State -->
+            <div id="empty-cart" class="text-center py-16">
+                <div class="text-6xl text-gray-300 mb-4">🛒</div>
+                <h2 class="text-2xl font-bold text-gray-400 mb-2">Your cart is empty</h2>
+                <p class="text-gray-500 mb-6">Add some security solutions to get started</p>
+                <button onclick="switchTab('products')" class="bg-nk-orange hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold">
+                    Browse Products
+                </button>
+            </div>
+
+            <!-- Cart with Items -->
+            <div id="cart-with-items" class="hidden">
+                <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+                
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Cart Items -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold">Cart Items</h3>
+                            </div>
+                            <div id="cart-items" class="p-6 space-y-4">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
+                            <h3 class="text-lg font-semibold mb-4">Order Summary</h3>
+                            
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between">
+                                    <span>Subtotal</span>
+                                    <span id="cart-subtotal">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>GST (10%)</span>
+                                    <span id="cart-gst">$0.00</span>
+                                </div>
+                                <div class="border-t border-gray-200 pt-3 flex justify-between font-semibold text-lg">
+                                    <span>Total</span>
+                                    <span id="cart-total">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button id="checkout-btn" onclick="startCheckout()" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors">
+                                Proceed to Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- @COMPONENT: CheckoutModal [multi-step checkout process] -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <!-- Checkout Header -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold">Checkout</h2>
+                        <button onclick="closeCheckout()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <!-- Progress Steps -->
+                    <div class="flex items-center space-x-4 mt-6">
+                        <div class="checkout-step active flex items-center">
+                            <div class="w-8 h-8 bg-nk-orange text-white rounded-full flex items-center justify-center text-sm font-semibold mr-2">1</div>
+                            <span class="text-sm font-medium">Email</span>
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                        <div class="checkout-step flex items-center">
+                            <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold mr-2">2</div>
+                            <span class="text-sm text-gray-600">Address</span>
+                        </div>
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                        <div class="checkout-step flex items-center">
+                            <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold mr-2">3</div>
+                            <span class="text-sm text-gray-600">Payment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Email Verification -->
+                <div id="checkout-step-1" class="checkout-step-content p-6">
+                    <h3 class="text-xl font-semibold mb-4">Email Verification</h3>
+                    <p class="text-gray-600 mb-6">We'll send your license keys to this email address. Please verify it's correct.</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email Address</label>
+                            <input type="email" id="checkout-email" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" placeholder="your@email.com">
+                        </div>
+                        
+                        <button onclick="sendOTP()" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
+                            Send Verification Code
+                        </button>
+                    </div>
+
+                    <!-- OTP Verification (Initially Hidden) -->
+                    <div id="otp-section" class="hidden mt-6 p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-medium mb-2">Enter Verification Code</h4>
+                        <p class="text-sm text-gray-600 mb-4">We've sent a 6-digit code to your email address.</p>
+                        <div class="flex space-x-2 mb-4">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            <input type="text" maxlength="1" class="otp-input w-12 h-12 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                        </div>
+                        <button onclick="verifyOTP()" class="w-full bg-nk-green hover:bg-emerald-600 text-white py-2 rounded-lg font-medium">
+                            Verify & Continue
+                        </button>
+                        <button onclick="sendOTP()" class="w-full text-nk-orange hover:text-orange-600 text-sm mt-2">
+                            Resend Code
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Address Details -->
+                <div id="checkout-step-2" class="checkout-step-content hidden p-6">
+                    <h3 class="text-xl font-semibold mb-4">Billing Address</h3>
+                    <p class="text-gray-600 mb-6">Please provide your billing address for invoice generation.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">First Name *</label>
+                            <input type="text" id="billing-first-name" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Last Name *</label>
+                            <input type="text" id="billing-last-name" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-2">Company Name</label>
+                            <input type="text" id="billing-company" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium mb-2">Street Address *</label>
+                            <input type="text" id="billing-address" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">City *</label>
+                            <input type="text" id="billing-city" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">State *</label>
+                            <select id="billing-state" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                                <option value="">Select State</option>
+                                <option value="NSW">New South Wales</option>
+                                <option value="VIC">Victoria</option>
+                                <option value="QLD">Queensland</option>
+                                <option value="WA">Western Australia</option>
+                                <option value="SA">South Australia</option>
+                                <option value="TAS">Tasmania</option>
+                                <option value="ACT">Australian Capital Territory</option>
+                                <option value="NT">Northern Territory</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Postcode *</label>
+                            <input type="text" id="billing-postcode" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Phone Number</label>
+                            <input type="tel" id="billing-phone" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <button onclick="proceedToPayment()" class="w-full bg-nk-orange hover:bg-orange-600 text-white py-3 rounded-lg font-semibold mt-6">
+                        Continue to Payment
+                    </button>
+                </div>
+
+                <!-- Step 3: Payment -->
+                <div id="checkout-step-3" class="checkout-step-content hidden p-6">
+                    <h3 class="text-xl font-semibold mb-4">Payment</h3>
+                    
+                    <!-- Order Summary -->
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-medium mb-3">Order Summary</h4>
+                        <div id="checkout-order-summary" class="space-y-2 text-sm">
+                            <!-- Order items populated here -->
+                        </div>
+                        <div class="border-t border-gray-200 pt-3 mt-3 flex justify-between font-semibold">
+                            <span>Total (inc. GST)</span>
+                            <span id="checkout-total-amount">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- BPOINT Payment Integration -->
+                    <div class="border border-gray-200 rounded-lg p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <div class="text-2xl mr-3">🔒</div>
+                            <div>
+                                <h4 class="font-semibold">Secure Payment via BPOINT</h4>
+                                <p class="text-sm text-gray-600">Your payment is processed securely through BPOINT</p>
+                            </div>
+                        </div>
+
+                        <!-- Demo Mode Banner -->
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                                <div>
+                                    <div class="font-medium text-yellow-800">Demo Mode Active</div>
+                                    <div class="text-sm text-yellow-700">Use test card: 4111 1111 1111 1111, CVV: 123, Any future date</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Card Number</label>
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Expiry Date</label>
+                                    <input type="text" id="card-expiry" placeholder="MM/YY" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">CVV</label>
+                                    <input type="text" id="card-cvv" placeholder="123" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Cardholder Name</label>
+                                <input type="text" id="card-name" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-nk-orange focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="processPayment()" class="w-full bg-nk-green hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold">
+                        Complete Purchase
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- @COMPONENT: SuccessModal [payment success, license keys, invoice] -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-8 text-center">
+                    <div class="text-6xl text-green-500 mb-4">✅</div>
+                    <h2 class="text-3xl font-bold text-green-700 mb-2">Payment Successful!</h2>
+                    <p class="text-gray-600 mb-8">Your license keys have been generated and sent to your email.</p>
+
+                    <!-- Order Details -->
+                    <div class="bg-gray-50 rounded-lg p-6 mb-6 text-left">
+                        <h3 class="font-semibold mb-4">Order Details</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span>Order ID:</span>
+                                <span id="success-order-id" class="font-mono">NK2IT-001234</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Email:</span>
+                                <span id="success-email">customer@example.com</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Payment Method:</span>
+                                <span>Credit Card</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- License Keys -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6 text-left">
+                        <h3 class="font-semibold mb-4 text-blue-800">Your License Keys</h3>
+                        <div id="license-keys-display" class="space-y-3">
+                            <!-- License keys will be populated here -->
+                        </div>
+                        <div class="mt-4 p-3 bg-blue-100 rounded-lg">
+                            <p class="text-sm text-blue-700">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                These license keys have also been sent to your email address.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-4">
+                        <button onclick="downloadInvoice()" class="flex-1 bg-nk-orange hover:bg-orange-600 text-white py-3 rounded-lg font-semibold">
+                            <i class="fas fa-download mr-2"></i>Download Invoice
+                        </button>
+                        <button onclick="emailInvoice()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-semibold">
+                            <i class="fas fa-envelope mr-2"></i>Email Invoice
+                        </button>
+                    </div>
+
+                    <button onclick="closeSuccess()" class="w-full mt-4 text-nk-orange hover:text-orange-600 font-medium">
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Application State
+            let cart = [];
+            let currentTab = 'home';
+            let checkoutStep = 1;
+            let checkoutData = {};
+
+            // Product Data
+            const products = {
+                'endpoint-protection': {
+                    name: 'Symantec Endpoint Protection Enterprise',
+                    price: 89.99,
+                    description: 'Advanced malware protection for enterprise environments'
+                },
+                'endpoint-complete': {
+                    name: 'Symantec Endpoint Security Complete',
+                    price: 149.99,
+                    description: 'Complete security suite with EDR and threat hunting'
+                }
+            };
+
+            // Tab Management
+            window.switchTab = function(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'text-nk-orange', 'border-b-2', 'border-nk-orange');
+                    btn.classList.add('text-gray-500');
+                });
+                
+                // Show selected tab content
+                document.getElementById(tabName + '-tab').classList.remove('hidden');
+                
+                // Add active class to selected tab
+                const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+                activeTab.classList.add('active', 'text-nk-orange', 'border-b-2', 'border-nk-orange');
+                activeTab.classList.remove('text-gray-500');
+                
+                currentTab = tabName;
+            };
+
+            // Quantity Management
+            window.updateQuantity = function(productId, change) {
+                const input = document.getElementById(`qty-${productId}`);
+                let newValue = parseInt(input.value) + change;
+                if (newValue < 1) newValue = 1;
+                if (newValue > 999) newValue = 999;
+                input.value = newValue;
+            };
+
+            // Cart Management
+            window.addToCart = function(productId) {
+                const quantity = parseInt(document.getElementById(`qty-${productId}`).value);
+                const product = products[productId];
+                
+                // Check if product already in cart
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: product.name,
+                        price: product.price,
+                        quantity: quantity,
+                        description: product.description
+                    });
+                }
+                
+                updateCartDisplay();
+                updateCartCounter();
+                
+                // Show success message
+                showNotification('Product added to cart!', 'success');
+            };
+
+            function updateCartDisplay() {
+                const cartItems = document.getElementById('cart-items');
+                const emptyCart = document.getElementById('empty-cart');
+                const cartWithItems = document.getElementById('cart-with-items');
+                
+                if (cart.length === 0) {
+                    emptyCart.classList.remove('hidden');
+                    cartWithItems.classList.add('hidden');
+                    return;
+                }
+                
+                emptyCart.classList.add('hidden');
+                cartWithItems.classList.remove('hidden');
+                
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-medium">${item.name}</h4>
+                            <p class="text-sm text-gray-600">${item.description}</p>
+                            <div class="text-lg font-semibold text-nk-orange mt-1">$${item.price.toFixed(2)} per seat</div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateCartQuantity('${item.id}', -1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">-</button>
+                                <span class="w-12 text-center font-semibold">${item.quantity}</span>
+                                <button onclick="updateCartQuantity('${item.id}', 1)" class="bg-gray-100 hover:bg-gray-200 w-8 h-8 rounded-full flex items-center justify-center">+</button>
+                            </div>
+                            <div class="text-lg font-semibold">$${(item.price * item.quantity).toFixed(2)}</div>
+                            <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                updateCartTotals();
+            }
+
+            function updateCartTotals() {
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const gst = subtotal * 0.1;
+                const total = subtotal + gst;
+                
+                document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('cart-gst').textContent = `$${gst.toFixed(2)}`;
+                document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+            }
+
+            function updateCartCounter() {
+                const counter = document.querySelector('.cart-count');
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                
+                if (totalItems > 0) {
+                    counter.textContent = totalItems;
+                    counter.classList.remove('hidden');
+                } else {
+                    counter.classList.add('hidden');
+                }
+            }
+
+            window.updateCartQuantity = function(productId, change) {
+                const item = cart.find(item => item.id === productId);
+                if (item) {
+                    item.quantity += change;
+                    if (item.quantity <= 0) {
+                        removeFromCart(productId);
+                    } else {
+                        updateCartDisplay();
+                        updateCartCounter();
+                    }
+                }
+            };
+
+            window.removeFromCart = function(productId) {
+                cart = cart.filter(item => item.id !== productId);
+                updateCartDisplay();
+                updateCartCounter();
+            };
+
+            // Checkout Process
+            window.startCheckout = function() {
+                if (cart.length === 0) return;
+                
+                document.getElementById('checkout-modal').classList.remove('hidden');
+                checkoutStep = 1;
+                updateCheckoutStep();
+            };
+
+            window.closeCheckout = function() {
+                document.getElementById('checkout-modal').classList.add('hidden');
+                checkoutStep = 1;
+                updateCheckoutStep();
+            };
+
+            function updateCheckoutStep() {
+                // Hide all steps
+                document.querySelectorAll('.checkout-step-content').forEach(step => {
+                    step.classList.add('hidden');
+                });
+                
+                // Show current step
+                document.getElementById(`checkout-step-${checkoutStep}`).classList.remove('hidden');
+                
+                // Update step indicators
+                document.querySelectorAll('.checkout-step').forEach((step, index) => {
+                    const stepNum = index + 1;
+                    const circle = step.querySelector('div');
+                    const text = step.querySelector('span');
+                    
+                    if (stepNum < checkoutStep) {
+                        // Completed step
+                        circle.className = 'w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-2';
+                        circle.innerHTML = '<i class="fas fa-check"></i>';
+                        text.className = 'text-sm font-medium text-green-600';
+                    } else if (stepNum === checkoutStep) {
+                        // Current step
+                        circle.className = 'w-8 h-8 bg-nk-orange text-white rounded-full flex items-center justify-center text-sm font-semibold mr-2';
+                        circle.textContent = stepNum;
+                        text.className = 'text-sm font-medium';
+                    } else {
+                        // Future step
+                        circle.className = 'w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-sm font-semibold mr-2';
+                        circle.textContent = stepNum;
+                        text.className = 'text-sm text-gray-600';
+                    }
+                });
+            }
+
+            // Email & OTP
+            window.sendOTP = function() {
+                const email = document.getElementById('checkout-email').value;
+                if (!email) {
+                    showNotification('Please enter your email address', 'error');
+                    return;
+                }
+                
+                // TODO: Implement actual OTP sending
+                checkoutData.email = email;
+                document.getElementById('otp-section').classList.remove('hidden');
+                showNotification('Verification code sent! (Demo: use 123456)', 'success');
+            };
+
+            window.verifyOTP = function() {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                const otp = Array.from(otpInputs).map(input => input.value).join('');
+                
+                // Demo verification - accept 123456
+                if (otp === '123456' || otp.length === 6) {
+                    checkoutStep = 2;
+                    updateCheckoutStep();
+                    showNotification('Email verified successfully!', 'success');
+                } else {
+                    showNotification('Invalid verification code', 'error');
+                }
+            };
+
+            // Address Details
+            window.proceedToPayment = function() {
+                // Collect billing address
+                const requiredFields = ['billing-first-name', 'billing-last-name', 'billing-address', 'billing-city', 'billing-state', 'billing-postcode'];
+                const missingFields = requiredFields.filter(fieldId => !document.getElementById(fieldId).value.trim());
+                
+                if (missingFields.length > 0) {
+                    showNotification('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                // Save address data
+                checkoutData.billing = {
+                    firstName: document.getElementById('billing-first-name').value,
+                    lastName: document.getElementById('billing-last-name').value,
+                    company: document.getElementById('billing-company').value,
+                    address: document.getElementById('billing-address').value,
+                    city: document.getElementById('billing-city').value,
+                    state: document.getElementById('billing-state').value,
+                    postcode: document.getElementById('billing-postcode').value,
+                    phone: document.getElementById('billing-phone').value
+                };
+                
+                // Populate order summary
+                const orderSummary = document.getElementById('checkout-order-summary');
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const gst = subtotal * 0.1;
+                const total = subtotal + gst;
+                
+                orderSummary.innerHTML = cart.map(item => `
+                    <div class="flex justify-between">
+                        <span>${item.name} × ${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('') + `
+                    <div class="flex justify-between">
+                        <span>GST (10%)</span>
+                        <span>$${gst.toFixed(2)}</span>
+                    </div>
+                `;
+                
+                document.getElementById('checkout-total-amount').textContent = `$${total.toFixed(2)}`;
+                
+                checkoutStep = 3;
+                updateCheckoutStep();
+            };
+
+            // Payment Processing
+            window.processPayment = function() {
+                const cardNumber = document.getElementById('card-number').value;
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+                const cardName = document.getElementById('card-name').value;
+                
+                if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
+                    showNotification('Please fill in all payment details', 'error');
+                    return;
+                }
+                
+                // TODO: Implement actual BPOINT payment processing
+                showNotification('Processing payment...', 'info');
+                
+                // Simulate payment processing
+                setTimeout(() => {
+                    // Generate order ID and license keys
+                    const orderId = 'NK2IT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                    const licenseKeys = cart.map(item => ({
+                        product: item.name,
+                        quantity: item.quantity,
+                        keys: Array.from({length: item.quantity}, () => 
+                            'SYMANT-' + Math.random().toString(36).substr(2, 9).toUpperCase() + '-' + 
+                            Math.random().toString(36).substr(2, 9).toUpperCase()
+                        )
+                    }));
+                    
+                    showSuccessModal(orderId, licenseKeys);
+                    
+                    // Clear cart
+                    cart = [];
+                    updateCartDisplay();
+                    updateCartCounter();
+                    
+                    closeCheckout();
+                }, 2000);
+            };
+
+            function showSuccessModal(orderId, licenseKeys) {
+                document.getElementById('success-order-id').textContent = orderId;
+                document.getElementById('success-email').textContent = checkoutData.email;
+                
+                const licenseDisplay = document.getElementById('license-keys-display');
+                licenseDisplay.innerHTML = licenseKeys.map(product => `
+                    <div class="border border-blue-300 rounded-lg p-3">
+                        <h4 class="font-medium text-blue-800 mb-2">${product.product}</h4>
+                        <div class="space-y-1">
+                            ${product.keys.map((key, index) => `
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="font-mono text-blue-700">${key}</span>
+                                    <button onclick="copyToClipboard('${key}')" class="text-blue-600 hover:text-blue-800">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('success-modal').classList.remove('hidden');
+            }
+
+            window.closeSuccess = function() {
+                document.getElementById('success-modal').classList.add('hidden');
+                switchTab('home');
+            };
+
+            window.downloadInvoice = function() {
+                // TODO: Generate and download PDF invoice
+                showNotification('Invoice download started...', 'success');
+            };
+
+            window.emailInvoice = function() {
+                // TODO: Send invoice via email
+                showNotification('Invoice sent to your email address', 'success');
+            };
+
+            window.copyToClipboard = function(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('License key copied to clipboard', 'success');
+                });
+            };
+
+            // Utility Functions
+            function showNotification(message, type = 'info') {
+                const colors = {
+                    success: 'bg-green-500',
+                    error: 'bg-red-500',
+                    info: 'bg-blue-500'
+                };
+                
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-transform duration-300 translate-x-full`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.classList.remove('translate-x-full');
+                }, 100);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            // FAQ Functionality
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.faq-question')) {
+                    const question = e.target.closest('.faq-question');
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('i');
+                    
+                    answer.classList.toggle('hidden');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                }
+                
+                // Tab clicking
+                if (e.target.closest('.tab-btn')) {
+                    const tab = e.target.closest('.tab-btn').dataset.tab;
+                    switchTab(tab);
+                }
+            });
+
+            // OTP Input Auto-focus
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('otp-input')) {
+                    if (e.target.value.length === 1) {
+                        const nextInput = e.target.nextElementSibling;
+                        if (nextInput && nextInput.classList.contains('otp-input')) {
+                            nextInput.focus();
+                        }
+                    }
+                }
+            });
+
+            // Initialize
+            updateCartDisplay();
+            updateCartCounter();
+        })();
+    </script>
+</body>
+</html>

@@ -1,11 +1,19 @@
-import { randomUUID } from 'crypto';
+
+
+// interface LicenseKeyData {
+//   productId: string;  | null;  
+//   productName: string;
+//   quantity: number;
+//   orderId: string;
+//   orderItemId?: string;
+// }
 
 interface LicenseKeyData {
-  productId: string;
+  productId: string | null;      // allow nulls explicitly
   productName: string;
   quantity: number;
   orderId: string;
-  orderItemId?: string;
+  orderItemId?: string | null;   // allow optional null
 }
 
 class LicenseService {
@@ -17,10 +25,11 @@ class LicenseService {
       keys.push(key);
     }
     
+    
     return keys;
   }
 
-  private generateSingleLicenseKey(productId: string): string {
+  private generateSingleLicenseKey(productId: string | null): string {
     // Generate license key based on product type
     const productPrefix = this.getProductPrefix(productId);
     const segments = [
@@ -34,13 +43,17 @@ class LicenseService {
     return segments.join('-');
   }
 
-  private getProductPrefix(productId: string): string {
+  private getProductPrefix(productId: string | null): string {
     const prefixes: Record<string, string> = {
       'endpoint-protection': 'SEPEP',
       'endpoint-complete': 'SESCO',
     };
     
-    return prefixes[productId] || 'SYMNT';
+    if (productId && prefixes[productId]) {
+      return prefixes[productId];
+    }
+    
+    return 'SYMNT';
   }
 
   private generateSegment(length: number): string {
